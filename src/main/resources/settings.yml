@@ -9,6 +9,7 @@ Plugin:
   generation:
     default_assets: true
     default_configs: true
+    default_glyph_font: "default" # Font a glyph should be put in if nothing is specified
   formatting: # This uses MiniMessage formatting, so legacy colors like §c or &c will not work
     inventory_titles: true # Formats all inventory titles made by any plugin
     titles: true # Formats all titles made by any plugin

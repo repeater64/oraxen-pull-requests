@@ -14,6 +14,7 @@ public enum Settings {
     REPAIR_COMMAND_ORAXEN_DURABILITY("Plugin.commands.repair.oraxen_durability_only"),
     GENERATE_DEFAULT_ASSETS("Plugin.generation.default_assets"),
     GENERATE_DEFAULT_CONFIGS("Plugin.generation.default_configs"),
+    DEFAULT_GLYPH_FONT("Plugin.generation.default_glyph_font"),
     WORLDEDIT_NOTEBLOCKS("Plugin.worldedit.noteblock_mechanic"),
     WORLDEDIT_STRINGBLOCKS("Plugin.worldedit.stringblock_mechanic"),
     FORMAT_INVENTORY_TITLES("Plugin.formatting.inventory_titles"),

@@ -120,6 +120,19 @@ public class FontManager {
         return glyphMap.values();
     }
 
+    public final Map<String, Set<Glyph>> getGlyphsByFont() {
+        Map<String, Set<Glyph>> glyphsByFont = new HashMap<>();
+        Collection<Glyph> glyphs = glyphMap.values();
+        for (Glyph glyph : glyphs) {
+            if (glyphsByFont.containsKey(glyph.getFont())) {
+                Set<Glyph> newGlyphs = new HashSet<>(glyphsByFont.get(glyph.getFont()));
+                newGlyphs.add(glyph);
+                glyphsByFont.put(glyph.getFont(), newGlyphs);
+            } else glyphsByFont.put(glyph.getFont(), Set.of(glyph));
+        }
+        return glyphsByFont;
+    }
+
     public final Collection<Glyph> getEmojis() {
         return glyphMap.values().stream().filter(Glyph::isEmoji).toList();
     }

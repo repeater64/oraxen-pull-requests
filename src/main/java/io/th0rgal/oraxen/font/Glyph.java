@@ -35,6 +35,7 @@ public class Glyph {
     private String texture;
     private final int ascent;
     private final int height;
+    private final String font;
     private String permission = null;
     private String[] placeholders;
     private int code;
@@ -67,6 +68,7 @@ public class Glyph {
         character = (char) code;
         ascent = glyphSection.getInt("ascent", 8);
         height = glyphSection.getInt("height", 8);
+        font = glyphSection.getString("font", Settings.DEFAULT_GLYPH_FONT.toString());
     }
 
     public boolean isFileChanged() {
@@ -96,6 +98,8 @@ public class Glyph {
     public int getHeight() {
         return height;
     }
+
+    public String getFont() { return font; }
 
     public String getPermission() {
         return permission;

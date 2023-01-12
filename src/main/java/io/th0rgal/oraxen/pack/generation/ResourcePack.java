@@ -7,7 +7,6 @@ import io.th0rgal.oraxen.api.OraxenItems;
 import io.th0rgal.oraxen.config.Message;
 import io.th0rgal.oraxen.config.ResourcesManager;
 import io.th0rgal.oraxen.config.Settings;
-import io.th0rgal.oraxen.font.Font;
 import io.th0rgal.oraxen.font.FontManager;
 import io.th0rgal.oraxen.font.Glyph;
 import io.th0rgal.oraxen.items.ItemBuilder;
@@ -309,16 +308,25 @@ public class ResourcePack {
     }
 
     private void generateFont(final FontManager fontManager) {
-        if (!fontManager.autoGenerate)
-            return;
-        final JsonObject output = new JsonObject();
+        if (!fontManager.autoGenerate) return;
+
+        for (Map.Entry<String, Set<Glyph>> entry : fontManager.getGlyphsByFont().entrySet()) {
+            JsonObject output = new JsonObject();
+            JsonArray providers = new JsonArray();
+            for (Glyph glyph : entry.getValue())
+                providers.add(glyph.toJson());
+            output.add("providers", providers);
+            writeStringToVirtual("assets/minecraft/font", entry.getKey() + ".json", output.toString());
+        }
+
+        /*final JsonObject output = new JsonObject();
         final JsonArray providers = new JsonArray();
         for (final Glyph glyph : fontManager.getGlyphs())
             providers.add(glyph.toJson());
         for (final Font font : fontManager.getFonts())
             providers.add(font.toJson());
         output.add("providers", providers);
-        writeStringToVirtual("assets/minecraft/font", "default.json", output.toString());
+        writeStringToVirtual("assets/minecraft/font", "default.json", output.toString());*/
     }
 
     private void generateSound(final SoundManager soundManager) {

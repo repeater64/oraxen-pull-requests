@@ -7,7 +7,6 @@ import io.th0rgal.oraxen.config.Message;
 import io.th0rgal.oraxen.config.Settings;
 import io.th0rgal.oraxen.utils.AdventureUtils;
 import net.kyori.adventure.inventory.Book;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,6 +27,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Arrays;
 import java.util.Map;
 
+//TODO Fix this not being serialized properly in listeners below
 public class FontEvents implements Listener {
 
     private final FontManager manager;
@@ -65,13 +65,10 @@ public class FontEvents implements Listener {
             if (i == 0) continue;
 
             for (Map.Entry<String, Glyph> entry : manager.getGlyphByPlaceholderMap().entrySet()) {
-                String unicode = String.valueOf(entry.getValue().getCharacter());
+                String glyphParsed = AdventureUtils.parseMiniMessage("<glyph:" + entry.getValue().getName() + ">");
+                if (manager.permsChatcolor != null) glyphParsed = glyphParsed + PapiAliases.setPlaceholders(event.getPlayer(), manager.permsChatcolor);
                 if (entry.getValue().hasPermission(event.getPlayer()))
-                    page = (manager.permsChatcolor == null)
-                            ? page.replace(entry.getKey(), ChatColor.WHITE + unicode + ChatColor.BLACK)
-                            .replace(unicode, ChatColor.WHITE + unicode + ChatColor.BLACK)
-                            : page.replace(entry.getKey(), ChatColor.WHITE + unicode + PapiAliases.setPlaceholders(event.getPlayer(), manager.permsChatcolor))
-                            .replace(unicode, ChatColor.WHITE + unicode + ChatColor.BLACK);
+                    page = page.replace(entry.getKey(), glyphParsed);
                 meta.setPage(i, AdventureUtils.parseLegacy(page));
             }
         }
@@ -104,13 +101,10 @@ public class FontEvents implements Listener {
             }
 
             for (Map.Entry<String, Glyph> entry : manager.getGlyphByPlaceholderMap().entrySet()) {
-                String unicode = String.valueOf(entry.getValue().getCharacter());
+                String glyphParsed = AdventureUtils.parseMiniMessage("<glyph:" + entry.getValue().getName() + ">");
+                if (manager.permsChatcolor != null) glyphParsed = glyphParsed + PapiAliases.setPlaceholders(event.getPlayer(), manager.permsChatcolor);
                 if (entry.getValue().hasPermission(event.getPlayer()))
-                    line = (manager.permsChatcolor == null)
-                            ? line.replace(entry.getKey(), ChatColor.WHITE + unicode + ChatColor.BLACK)
-                            .replace(unicode, ChatColor.WHITE + unicode + ChatColor.BLACK)
-                            : line.replace(entry.getKey(), ChatColor.WHITE + unicode + PapiAliases.setPlaceholders(event.getPlayer(), manager.permsChatcolor))
-                            .replace(unicode, ChatColor.WHITE + unicode + ChatColor.BLACK);
+                    line = line.replace(entry.getKey(), glyphParsed);
             }
             event.setLine(i, AdventureUtils.parseLegacy(line));
         }
@@ -128,16 +122,14 @@ public class FontEvents implements Listener {
                 event.setCancelled(true);
             }
         }
-        for (Map.Entry<String, Glyph> entry : manager.getGlyphByPlaceholderMap().entrySet())
+        for (Map.Entry<String, Glyph> entry : manager.getGlyphByPlaceholderMap().entrySet()) {
+            String glyphParsed = AdventureUtils.parseMiniMessage("<glyph:" + entry.getValue().getName() + ">");
+            if (manager.permsChatcolor != null) glyphParsed = glyphParsed + PapiAliases.setPlaceholders(event.getPlayer(), manager.permsChatcolor);
             if (entry.getValue().hasPermission(event.getPlayer()))
-                message = (manager.permsChatcolor == null)
-                        ? message.replace(entry.getKey(),
-                        String.valueOf(entry.getValue().getCharacter()))
-                        : message.replace(entry.getKey(),
-                        ChatColor.WHITE + String.valueOf(entry.getValue().getCharacter())
-                                + PapiAliases.setPlaceholders(event.getPlayer(), manager.permsChatcolor));
+                message = message.replace(entry.getKey(), glyphParsed);
+        }
 
-        event.setMessage(message);
+        event.setMessage(message.replaceAll("\\\\(?!u)(?!\")", ""));
     }
 
     @EventHandler
@@ -187,13 +179,10 @@ public class FontEvents implements Listener {
                 }
 
                 for (Map.Entry<String, Glyph> entry : manager.getGlyphByPlaceholderMap().entrySet()) {
+                    String glyphParsed = AdventureUtils.parseMiniMessage("<glyph:" + entry.getValue().getName() + ">");
+                    if (manager.permsChatcolor != null) glyphParsed = glyphParsed + PapiAliases.setPlaceholders(player, manager.permsChatcolor);
                     if (entry.getValue().hasPermission(player))
-                        displayName = (manager.permsChatcolor == null)
-                                ? displayName.replace(entry.getKey(),
-                                String.valueOf(entry.getValue().getCharacter()))
-                                : displayName.replace(entry.getKey(),
-                                ChatColor.WHITE + String.valueOf(entry.getValue().getCharacter())
-                                        + PapiAliases.setPlaceholders(player, manager.permsChatcolor));
+                        displayName = displayName.replace(entry.getKey(), glyphParsed);
                 }
 
                 ItemMeta meta = clickedItem.getItemMeta();
