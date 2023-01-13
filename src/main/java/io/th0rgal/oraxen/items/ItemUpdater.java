@@ -56,7 +56,6 @@ public class ItemUpdater implements Listener {
         if (firstMeta == null || !firstMeta.hasDisplayName()) return;
         if (resultMeta == null || !resultMeta.hasDisplayName()) return;
         if (resultMeta.getDisplayName().equals(firstMeta.getDisplayName())) return;
-        if (oraxenMeta != null && !oraxenMeta.hasDisplayName()) return;
 
         if (oraxenMeta != null && oraxenMeta.hasDisplayName()) {
             String resultDisplay = AdventureUtils.PLAIN_TEXT.deserialize(resultMeta.getDisplayName()).content();
