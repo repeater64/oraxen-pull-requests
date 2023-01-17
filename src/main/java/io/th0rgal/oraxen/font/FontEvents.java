@@ -6,6 +6,7 @@ import io.th0rgal.oraxen.compatibilities.provided.placeholderapi.PapiAliases;
 import io.th0rgal.oraxen.config.Message;
 import io.th0rgal.oraxen.config.Settings;
 import io.th0rgal.oraxen.utils.AdventureUtils;
+import io.th0rgal.oraxen.utils.logs.Logs;
 import net.kyori.adventure.inventory.Book;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -83,7 +84,9 @@ public class FontEvents implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler
+
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onSignGlyph(final SignChangeEvent event) {
         if (!Settings.FORMAT_SIGNS.toBool()) return;
 
@@ -106,7 +109,8 @@ public class FontEvents implements Listener {
                 if (entry.getValue().hasPermission(event.getPlayer()))
                     line = line.replace(entry.getKey(), glyphParsed);
             }
-            event.setLine(i, AdventureUtils.parseLegacy(line));
+            Logs.broadcast(line);
+            event.setLine(i, AdventureUtils.parseLegacyThroughMiniMessage(line));
         }
     }
 
@@ -128,8 +132,7 @@ public class FontEvents implements Listener {
             if (entry.getValue().hasPermission(event.getPlayer()))
                 message = message.replace(entry.getKey(), glyphParsed);
         }
-
-        event.setMessage(message.replaceAll("\\\\(?!u)(?!\")", ""));
+        event.setMessage(AdventureUtils.parseLegacyThroughMiniMessage(message.replaceAll("\\\\(?!u)(?!\")", "")));
     }
 
     @EventHandler

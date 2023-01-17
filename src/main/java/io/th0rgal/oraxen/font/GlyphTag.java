@@ -22,7 +22,9 @@ public class GlyphTag {
 
     static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
         Glyph glyph = OraxenPlugin.get().getFontManager().getGlyphFromName(args.popOr("A glyph value is required").value());
-        return Tag.inserting(Component.text(glyph.getCharacter()).color(NamedTextColor.WHITE).font(Key.key("minecraft", glyph.getFont())));
+        Key font = glyph.getFont().contains(":") ? Key.key(glyph.getFont()) : Key.key("minecraft", glyph.getFont());
+        Component finalComponent = Component.text(glyph.getCharacter()).color(NamedTextColor.WHITE).font(font);
+        return Tag.selfClosingInserting(finalComponent);
     }
 
     static @Nullable Emitable emit(final Component component) {
