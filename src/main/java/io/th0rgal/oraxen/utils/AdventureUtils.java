@@ -8,8 +8,8 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.md_5.bungee.chat.ScoreComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.md_5.bungee.chat.ScoreComponentSerializer;
 
 public class AdventureUtils {
 
@@ -50,11 +50,11 @@ public class AdventureUtils {
      * @return The original component, serialized and deserialized through MiniMessage
      */
     public static Component parseMiniMessage(Component message) {
-        return MINI_MESSAGE.deserialize(MINI_MESSAGE.serialize(message));
+        return MINI_MESSAGE.deserialize(MINI_MESSAGE.serialize(message).replaceAll("\\\\(?!u)(?!\")", ""));
     }
 
     public static Component parseMiniMessage(Component message, TagResolver tagResolver) {
-        return MINI_MESSAGE.deserialize(MINI_MESSAGE.serialize(message), tagResolver);
+        return MINI_MESSAGE.deserialize(MINI_MESSAGE.serialize(message).replaceAll("\\\\(?!u)(?!\")", ""), tagResolver);
     }
 
     /**
