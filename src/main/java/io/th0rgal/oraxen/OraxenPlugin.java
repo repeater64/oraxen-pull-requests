@@ -2,6 +2,7 @@ package io.th0rgal.oraxen;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.ticxo.playeranimator.PlayerAnimatorImpl;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIConfig;
 import io.th0rgal.oraxen.api.OraxenItems;
@@ -15,6 +16,7 @@ import io.th0rgal.oraxen.config.SettingsUpdater;
 import io.th0rgal.oraxen.font.FontManager;
 import io.th0rgal.oraxen.font.packets.InventoryPacketListener;
 import io.th0rgal.oraxen.font.packets.TitlePacketListener;
+import io.th0rgal.oraxen.gestures.GestureManager;
 import io.th0rgal.oraxen.hud.HudManager;
 import io.th0rgal.oraxen.items.ItemUpdater;
 import io.th0rgal.oraxen.mechanics.MechanicsManager;
@@ -41,6 +43,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class OraxenPlugin extends JavaPlugin {
 
     private static OraxenPlugin oraxen;
+    private static GestureManager gestureManager;
     private ConfigsManager configsManager;
     private BukkitAudiences audience;
     private UploadManager uploadManager;
@@ -51,10 +54,21 @@ public class OraxenPlugin extends JavaPlugin {
     private ResourcePack resourcePack;
     private ClickActionManager clickActionManager;
     private ProtocolManager protocolManager;
+    public final boolean isPaperServer;
 
     public OraxenPlugin() throws NoSuchFieldException, IllegalAccessException {
         oraxen = this;
+        isPaperServer = isPaperServer();
         Logs.enableFilter();
+    }
+
+    private boolean isPaperServer() {
+        try {
+            Class.forName("com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 
     public static OraxenPlugin get() {
@@ -70,6 +84,7 @@ public class OraxenPlugin extends JavaPlugin {
     public void onEnable() {
         CommandAPI.onEnable(this);
         ProtectionLib.init(this);
+        PlayerAnimatorImpl.initialize(this);
         audience = BukkitAudiences.create(this);
         clickActionManager = new ClickActionManager(this);
         reloadConfigs();
@@ -91,6 +106,7 @@ public class OraxenPlugin extends JavaPlugin {
         hudManager = new HudManager(configsManager);
         fontManager = new FontManager(configsManager);
         soundManager = new SoundManager(configsManager.getSound());
+        gestureManager = new GestureManager();
         OraxenItems.loadItems(configsManager);
         io.th0rgal.oraxen.items.OraxenItems.loadItems(configsManager);
         fontManager.registerEvents();
@@ -138,6 +154,10 @@ public class OraxenPlugin extends JavaPlugin {
 
     public ProtocolManager getProtocolManager() {
         return protocolManager;
+    }
+
+    public GestureManager getGesturesManager() {
+        return gestureManager;
     }
 
     public BukkitAudiences getAudience() {
